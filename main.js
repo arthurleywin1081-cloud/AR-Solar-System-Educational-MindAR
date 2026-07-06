@@ -972,7 +972,8 @@ function startApp() {
   renderer.setAnimationLoop(render);
 }
 
-window.addEventListener("app-unlocked", startApp, { once: true });
+// Start the app immediately
+startApp();
 
 // =============================================================
 // STEP 6 — MindAR IMAGE-TRACKING AR MODE
