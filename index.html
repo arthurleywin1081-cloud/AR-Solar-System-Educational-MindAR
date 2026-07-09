@@ -55,11 +55,6 @@
   #scene-canvas { width:100%; height:100%; display:block; }
   #ui-overlay { position:fixed; inset:0; pointer-events:none; z-index:250; }
 
-  <div id="ar-status">Point the camera at the printed marker</div>
-<div id="ar-controls">
-  <button id="ar-exit-btn">✕ Exit AR</button>
-</div>
-
   #season-label {
     position:absolute; top:max(14px,env(safe-area-inset-top));
     left:50%; transform:translateX(-50%);
@@ -233,7 +228,6 @@
   #ar-controls {
     position:fixed; top:max(96px, calc(env(safe-area-inset-top)+80px)); right:16px;
     z-index:999;
-  
   }
   #ar-exit-btn {
     padding:10px 18px; border-radius:10px; font-size:0.82rem; font-weight:600;
@@ -263,7 +257,6 @@
 </head>
 <body>
 
-<!-- GATE -->
 <div id="gate">
   <div id="gate-box">
     <h1>Private Demo</h1>
@@ -274,29 +267,31 @@
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none;">
   <div id="loading">Loading scene…</div>
   <canvas id="scene-canvas"></canvas>
 
   <div id="ui-overlay">
+    
+    <div id="ar-status" style="display: none;">Point the camera at the printed marker</div>
+    <div id="ar-controls" style="display: none;">
+      <button id="ar-exit-btn">✕ Exit AR</button>
+    </div>
+
     <div id="season-label">Hemisfera Utara: — &nbsp;|&nbsp; Hemisfera Selatan: —</div>
     <div id="hint">Drag to orbit • Scroll to zoom • <strong style="color:#ffb86b">Tap Earth</strong> to learn about seasons</div>
     <div id="zoom-hint">Tap ⓘ for season info • Tap ✕ to exit</div>
     <button class="info-btn" id="season-info-btn" title="Season info">ⓘ</button>
     <button class="info-btn" id="eclipse-info-btn" title="Eclipse info">ⓘ</button>
 
-    <!-- Exit earthview button -->
     <button id="earthview-exit-btn">✕ Exit Earth View</button>
 
-    <!-- Axial tilt indicator -->
     <svg id="tilt-svg" xmlns="http://www.w3.org/2000/svg">
       <line id="tilt-line-n" x1="0" y1="0" x2="0" y2="0"/>
       <line id="tilt-line-s" x1="0" y1="0" x2="0" y2="0"/>
       <text id="tilt-label" text-anchor="middle">23.5°</text>
     </svg>
 
-    <!-- Season slider -->
     <div id="slider-panel">
       <input type="range" id="season-slider" min="0" max="1000" value="0" step="1" />
       <div id="season-ticks">
@@ -309,17 +304,14 @@
 
     <button id="ar-enter-btn">🔭 View in AR</button>
 
-    <!-- Season info bubble -->
     <div id="infobubble">
       <button id="infobubble-close">✕</button>
       <h3 id="infobubble-title">Kenapa Musim Berlaku</h3>
       <p id="infobubble-text"></p>
     </div>
 
-    <!-- Eclipse demo trigger button (visible when zoomed in on Earth) -->
     <button id="eclipse-demo-btn">🌑 Eclipse Demo</button>
 
-    <!-- Eclipse control panel -->
     <div id="eclipse-panel">
       <h3>Eclipse Demo</h3>
       <div class="eclipse-btns">
@@ -329,7 +321,6 @@
       <button id="eclipse-exit">✕ Exit Eclipse Mode</button>
     </div>
 
-    <!-- Eclipse educational info -->
     <div id="eclipse-infobubble">
       <button id="eclipse-infobubble-close">✕</button>
       <p id="eclipse-info-text"></p>
@@ -337,10 +328,6 @@
   </div>
 </div>
 
-<!-- MindAR container: MindAR mounts its own camera video + canvas in here.
-     All other controls (play/pause, eclipse demo, season/eclipse info,
-     tilt indicator, slider) are the SAME shared #ui-overlay elements used
-     in Study Mode — see main.js enterAR()/exitAR(). -->
 <div id="ar-container">
 </div>
 
