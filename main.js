@@ -1016,7 +1016,7 @@ const NORMAL_SCALE = 1.0;
 // The orbit is ~12 Three.js units across; 0.05 makes it ~0.6 marker-widths
 // wide, a nice size sitting above the printed page. Tweak if it looks
 // too big/small for your printout.
-const MINDAR_SCALE = 0.07;
+const MINDAR_SCALE = 0.06;
 
 let isARMode = false;
 let mindarThree = null;
