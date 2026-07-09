@@ -226,8 +226,9 @@
   /* Sits where #ar-enter-btn normally is — main.js hides #ar-enter-btn
      while AR is active, so they never overlap. */
   #ar-controls {
-    position:fixed; top:max(24px, env(safe-area-inset-top)); right:16px;
+    position:fixed; top:max(96px, calc(env(safe-area-inset-top)+80px)); right:16px;
     z-index:210;
+  
   }
   #ar-exit-btn {
     padding:10px 18px; border-radius:10px; font-size:0.82rem; font-weight:600;
