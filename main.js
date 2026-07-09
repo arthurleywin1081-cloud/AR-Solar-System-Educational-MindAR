@@ -558,8 +558,8 @@ eclipseInfoBubbleClose.addEventListener("click", (e) => {
 });
 
 const ECLIPSE_INFO = {
-  solar: <strong>☀️ Gerhana Matahari</strong><br>Gerhana Matahari berlaku apabila kedudukan Bulan menghalang cahaya Matahari daripada sampai ke Bumi, menyebabkan bayang-bayang Bulan melindungi sebahagian permukaan Bumi. Ini terjadi kerana kedudukan Matahari, Bulan dan Bumi berada dalam satu garisan lurus. Walau bagaimanapun, fenomena ini tidak meliputi seluruh permukaan Bumi kerana saiz Bulan yang jauh lebih kecil daripada Bumi.<br><br><em>Tempoh gerhana penuh: sehingga 7 minit 31 saat.</em>,
-  lunar: <strong>🌕 Gerhana Bulan</strong><br>Gerhana Bulan pula berlaku apabila Matahari, Bumi dan Bulan berada dalam satu garisan lurus. Bayang-bayang Bumi yang terhasil akan menutupi Bulan, menyebabkan Bulan kelihatan gelap atau kemerah-merahan. Menariknya, gerhana ini boleh dilihat serentak dari mana-mana tempat di sisi malam Bumi.,
+  solar: `<strong>☀️ Gerhana Matahari</strong><br>Gerhana Matahari berlaku apabila kedudukan Bulan menghalang cahaya Matahari daripada sampai ke Bumi, menyebabkan bayang-bayang Bulan melindungi sebahagian permukaan Bumi. Ini terjadi kerana kedudukan Matahari, Bulan dan Bumi berada dalam satu garisan lurus. Walau bagaimanapun, fenomena ini tidak meliputi seluruh permukaan Bumi kerana saiz Bulan yang jauh lebih kecil daripada Bumi.<br><br><em>Tempoh gerhana penuh: sehingga 7 minit 31 saat.</em>`,
+  lunar: `<strong>🌕 Gerhana Bulan</strong><br>Gerhana Bulan pula berlaku apabila Matahari, Bumi dan Bulan berada dalam satu garisan lurus. Bayang-bayang Bumi yang terhasil akan menutupi Bulan, menyebabkan Bulan kelihatan gelap atau kemerah-merahan. Menariknya, gerhana ini boleh dilihat serentak dari mana-mana tempat di sisi malam Bumi.`,
 }
 
 function showEclipsePanel() {
