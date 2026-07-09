@@ -558,9 +558,9 @@ eclipseInfoBubbleClose.addEventListener("click", (e) => {
 });
 
 const ECLIPSE_INFO = {
-  solar: `<strong>☀️ Gerhana Matahari</strong><br>Bulan bergerak terus di antara Bumi dan Matahari. Ini hanya berlaku semasa <em>bulan baharu</em>, apabila orbit Bulan melintasi satah ekliptik (kecondongan orbit Bulan sebanyak 5.1° bermakna kebanyakan bulan baharu melepasi di atas atau di bawah garis Matahari-Bumi). Umbra Bulan mencampakkan tompok gelap kecil di permukaan Bumi — hanya orang dalam tompok itu melihat gerhana penuh.<br><br><em>Tempoh gerhana penuh: sehingga 7 minit 31 saat.</em>`,
-  lunar: `<strong>🌕 Gerhana Bulan</strong><br>Bumi bergerak terus di antara Matahari dan Bulan. Ini hanya berlaku semasa <em>bulan purnama</em>, sekali lagi hanya apabila Bulan berhampiran nod orbit (titik persilangan orbit yang condong 5.1°). Bayang-bayang Bumi jatuh merentasi permukaan Bulan, menggelapkannya dengan jelas — bayang-bayang itu mempunyai tepi lembut (penumbra) dengan teras yang lebih gelap (umbra).<br><br><em>Gerhana bulan boleh dilihat serentak dari mana-mana tempat di sisi malam Bumi.</em>`,
-};
+  solar: <strong>☀️ Gerhana Matahari</strong><br>Gerhana Matahari berlaku apabila kedudukan Bulan menghalang cahaya Matahari daripada sampai ke Bumi, menyebabkan bayang-bayang Bulan melindungi sebahagian permukaan Bumi. Ini terjadi kerana kedudukan Matahari, Bulan dan Bumi berada dalam satu garisan lurus. Walau bagaimanapun, fenomena ini tidak meliputi seluruh permukaan Bumi kerana saiz Bulan yang jauh lebih kecil daripada Bumi.<br><br><em>Tempoh gerhana penuh: sehingga 7 minit 31 saat.</em>,
+  lunar: <strong>🌕 Gerhana Bulan</strong><br>Gerhana Bulan pula berlaku apabila Matahari, Bumi dan Bulan berada dalam satu garisan lurus. Bayang-bayang Bumi yang terhasil akan menutupi Bulan, menyebabkan Bulan kelihatan gelap atau kemerah-merahan. Menariknya, gerhana ini boleh dilihat serentak dari mana-mana tempat di sisi malam Bumi.,
+}
 
 function showEclipsePanel() {
   eclipsePanel.style.display = "block";
@@ -750,6 +750,12 @@ const FIXED_TILT_AXIS = new THREE.Vector3(
   0
 ).normalize();
 
+// Fix 4b: In AR, arSceneGroup is rotated +90° about X (to lie flat on the
+// marker) — FIXED_TILT_AXIS is only valid in the unrotated frame, so we
+// need the same rotation applied to it to stay physically correct in AR.
+const AR_FIXED_TILT_AXIS = FIXED_TILT_AXIS.clone()
+  .applyEuler(new THREE.Euler(Math.PI / 2, 0, 0));
+
 function worldToScreen(pos, cam = camera) {
   const v = pos.clone().project(cam);
   return {
@@ -761,11 +767,14 @@ function worldToScreen(pos, cam = camera) {
 
 // (occlusion machinery removed — tilt line now draws straight through Earth, Fix 4)
 
-function updateTiltIndicator(cam = camera) {
+function updateTiltIndicator(cam = camera, worldScale = 1, axis = FIXED_TILT_AXIS) {
   earth.getWorldPosition(_tiltVec);
-  const reach = EARTH_RADIUS * 1.45;
-  _tiltN.copy(_tiltVec).addScaledVector(FIXED_TILT_AXIS,  reach);
-  _tiltS.copy(_tiltVec).addScaledVector(FIXED_TILT_AXIS, -reach);
+  // Fix 4b: reach must shrink by the same factor Earth's own world
+  // position already has applied (1 in Study Mode, MINDAR_SCALE in AR) —
+  // otherwise the line's endpoints land far outside the model/frustum.
+  const reach = EARTH_RADIUS * 1.45 * worldScale;
+  _tiltN.copy(_tiltVec).addScaledVector(axis,  reach);
+  _tiltS.copy(_tiltVec).addScaledVector(axis, -reach);
 
   const centre = worldToScreen(_tiltVec, cam);
   const north  = worldToScreen(_tiltN, cam);
@@ -779,8 +788,8 @@ function updateTiltIndicator(cam = camera) {
 
   // Fix 2 & 3: Only draw the stub from each pole tip to where the tilt axis
   // exits Earth's surface — never through the solid body.
-  _tiltNSurface.copy(_tiltVec).addScaledVector(FIXED_TILT_AXIS,  EARTH_RADIUS);
-  _tiltSSurface.copy(_tiltVec).addScaledVector(FIXED_TILT_AXIS, -EARTH_RADIUS);
+  _tiltNSurface.copy(_tiltVec).addScaledVector(axis,  EARTH_RADIUS * worldScale);
+  _tiltSSurface.copy(_tiltVec).addScaledVector(axis, -EARTH_RADIUS * worldScale);
   const northSurface2D = worldToScreen(_tiltNSurface, cam);
   const southSurface2D = worldToScreen(_tiltSSurface, cam);
 
@@ -799,8 +808,8 @@ function updateTiltIndicator(cam = camera) {
   // Hide each stub individually if its pole is facing away from the camera,
   // so a pole doesn't incorrectly show through the far side of the sphere.
   const toCamera = cam.position.clone().sub(_tiltVec).normalize();
-  const northFacingCamera = FIXED_TILT_AXIS.dot(toCamera) > 0;
-  const southFacingCamera = -FIXED_TILT_AXIS.dot(toCamera) > 0;
+  const northFacingCamera = axis.dot(toCamera) > 0;
+  const southFacingCamera = -axis.dot(toCamera) > 0;
 
   tiltLineN.style.display = (northFacingCamera && !north.behind && !centre.behind) ? "" : "none";
   tiltLineS.style.display = (southFacingCamera && !south.behind && !centre.behind) ? "" : "none";
@@ -1091,7 +1100,7 @@ async function enterAR() {
     const delta = isAutoPlaying ? (now - lastTime) / 1000 : 0;
     lastTime    = now;
     updateSolarSystem(delta, now);
-    updateTiltIndicator(arCamera); // Fix 4: draw the tilt indicator in AR too
+    updateTiltIndicator(arCamera, MINDAR_SCALE, AR_FIXED_TILT_AXIS); // Fix 4b: correct scale + axis for AR
     arRenderer.render(arScene, arCamera);
   }
   lastTime = performance.now();
