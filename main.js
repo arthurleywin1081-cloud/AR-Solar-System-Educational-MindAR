@@ -1043,7 +1043,7 @@ async function enterAR() {
   document.getElementById("hint").style.display = "none";
   arEnterBtn.style.display = "none";
   arContainer.style.display = "block";
-  arContainer.querySelector("#ar-status").textContent = "Starting camera…";
+  document.getElementById("ar-status").textContent = "Starting camera…";
 
   // Fix 1: the eclipse demo trigger and season info button are normally
   // gated by zoomState (only shown in desktop "earthview"), but AR has no
@@ -1069,7 +1069,7 @@ async function enterAR() {
     return;
   }
 
-  arContainer.querySelector("#ar-status").textContent =
+  document.getElementById("ar-status").textContent =
     "Point the camera at the printed marker";
 
   // Hide the starfield in AR — the camera feed is the background now.
